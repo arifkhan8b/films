@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FilmsController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+  
+Route::resource('films', FilmsController::class, ['except' => [
+    'show'
+]]);
+
+Route::get('/films/{slug}', [FilmsController::class, 'show'])->name('films.show');
+
+Route::resource('comments', CommentController::class);
+
