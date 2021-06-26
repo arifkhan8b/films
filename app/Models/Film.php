@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 use DB;
 
@@ -39,14 +40,42 @@ class Film extends Model
      */
     public function get_all_films(){
 
-        $films = DB::table('films')
-                    ->leftJoin('film_genre', 'films.id', '=', 'film_genre.film_id')
-                    ->leftjoin('genres', 'genres.id', '=', 'film_genre.genre_id')
-                    ->select('films.*', DB::raw("GROUP_CONCAT(genres.genre SEPARATOR ', ') as genre"))
-                    ->groupBy('films.id')
-                    ->latest()
-                    ->paginate(9);
+        $films = Film::with('genres:genre')->latest()->paginate(9);
 
         return $films;
+    }
+    
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+  
+        static::created(function ($film) {
+            $film->slug = $film->createSlug($film->name);
+            $film->save();
+        });
+    }
+
+    /** 
+     * Create unique slug
+     *
+     * @return response()
+     */
+    private function createSlug($name){
+        if (static::whereSlug($slug = Str::slug($name))->exists()) {
+            $max = static::whereName($name)->latest('id')->skip(1)->value('slug');
+  
+            if (is_numeric($max[-1])) {
+                return preg_replace_callback('/(\d+)$/', function ($mathces) {
+                    return $mathces[1] + 1;
+                }, $max);
+            }
+  
+            return "{$slug}-2";
+        }
+  
+        return $slug;
     }
 }

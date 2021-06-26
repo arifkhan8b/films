@@ -33,8 +33,8 @@
         <div class="col-md-7">
             <div class="card">
                 <div class="card-header">
-                    <span class="pull-left">Released: {{ $film->release_date }}</span>
-                    <span class="pull-right">Country: {{ $film->country }}</span>
+                    <span class="pull-left">Released: <b>{{ $film->release_date }}</b></span>
+                    <span class="pull-right">Country: <b>{{ $film->country }}</b></span>
                 </div>
 
                 <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">

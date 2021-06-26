@@ -66,7 +66,7 @@
                         @foreach ($films as $film)
                         <div class="col-4">
                             <div class="card">
-                                <div class="card-header">Release Date: {{ $film->release_date }}</div>
+                                <div class="card-header">Release Date: <b>{{ $film->release_date }}</b></div>
 
                                 <a class="" href="{{ route('films.show',$film->slug) }}">
                                     <div class="bg-image hover-zoom">
@@ -78,7 +78,7 @@
                                 <h5 class="card-title">{{ $film->name }}</h5>
                                 <div class="pull-right">
                                 </div>
-                                <p class="genres">{{ $film->genre }}</p>
+                                <p class="genres">{{ \Illuminate\Support\Str::limit($film->genres->pluck('genre')->implode(', '), 32, $end='...') }}</p>
                                 <p class="card-text description">
                                 {{ \Illuminate\Support\Str::limit($film->description, 32, $end='...') }}
                                 </p>
