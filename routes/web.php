@@ -16,7 +16,7 @@ use App\Http\Controllers\CommentController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/films');
 });
 
 Auth::routes();
