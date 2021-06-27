@@ -58,7 +58,7 @@ class FilmsController extends Controller
             'ticket_price' => 'required',
             'country' => 'required',
             'release_date' => 'required',
-            'photo' => 'image|required',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'genres' => 'required'
         ]);
 

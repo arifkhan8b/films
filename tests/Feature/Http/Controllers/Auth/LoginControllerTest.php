@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Artisan;
 
 class LoginControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use WithFaker;
 
     /**
      * A basic feature test example.
@@ -43,7 +43,7 @@ class LoginControllerTest extends TestCase
 
         $response = $this->post(route('login'), [
             'email' => 'john@yahoo.com',
-            'password' => 123456789
+            'password' => '123456789'
         ]);
 
         $response->assertRedirect('/');
@@ -66,10 +66,35 @@ class LoginControllerTest extends TestCase
 
         $response->assertRedirect('/');
 
-        $this->assertDatabaseHas('users', [
-            'name' => 'johnk',
-            'email' => 'johnk@yahoo.com.us.ts'
+        // $this->assertDatabaseHas('users', [
+        //     'name' => 'johnk',
+        //     'email' => 'johnk@yahoo.com.us.ts'
+        // ]);
+
+    }
+
+    public function test_user_cannot_view_a_login_form_when_authenticated()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get('/login');
+
+        $response->assertRedirect('/home');
+    }
+    
+    public function test_user_can_login_with_correct_credentials()
+    {
+        $user = User::factory()->create([
+            'password' => bcrypt($password = 'i-love-laravel'),
+        ]);
+// echo '<pre>';
+// print_r($user);die;
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => $password,
         ]);
 
+        $response->assertRedirect('/');
+        $this->assertAuthenticatedAs($user);
     }
 }
